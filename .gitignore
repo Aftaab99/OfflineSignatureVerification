@@ -1,0 +1,7 @@
+.idea/
+__pycache__
+logo.png
+*.pkl
+*.db
+Models/
+
