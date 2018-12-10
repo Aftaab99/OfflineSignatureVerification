@@ -4,7 +4,6 @@ import torch
 import numpy as np
 from Dataloaders import TestDataset
 from torch.utils.data import DataLoader
-from SampleSetDataloader import SampleTestDataset
 
 device = torch.device('cpu')
 model = SiameseConvNet()
@@ -48,9 +47,7 @@ def test(dataset_type):
 	if dataset_type == 'CEDAR1':
 		test_dataset = TestDataset()
 		loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
-	else:
-		sample_test_dataset = SampleTestDataset()
-		loader = DataLoader(sample_test_dataset, batch_size=16, shuffle=True)
+	
 
 	for batch_index, data in enumerate(loader):
 		A = data[0]
