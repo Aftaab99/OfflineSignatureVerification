@@ -29,6 +29,7 @@ def train(epoch):
 		f_A, f_B = model.forward(A, B)
 		loss = criterion(f_A, f_B, label)
 		total_loss += loss.item()
+
 		print('Epoch {}, batch {}, loss={}'.format(epoch, batch_index, loss.item()))
 		loss.backward()
 		optimizer.step()
