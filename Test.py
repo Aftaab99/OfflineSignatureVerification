@@ -43,10 +43,9 @@ n_batch = 0
 def test(dataset_type):
 	model.eval()
 	global batch_avg_acc, batch_avg_d, n_batch
-	loader = None
-	if dataset_type == 'CEDAR1':
-		test_dataset = TestDataset()
-		loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
+	
+	test_dataset = TestDataset()
+	loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
 	
 
 	for batch_index, data in enumerate(loader):
@@ -68,10 +67,4 @@ print('CEDAR1:')
 test('CEDAR1')
 print('Avg acc across all batches={} at d={}'.format(batch_avg_acc / n_batch, batch_avg_d / n_batch))
 
-batch_avg_acc = 0
-n_batch = 0
-batch_avg_d = 0
 
-print('Sample dataset provided')
-test('Sample')
-print('Avg acc across all batches={} at d={}'.format(batch_avg_acc / n_batch, batch_avg_d / n_batch))
