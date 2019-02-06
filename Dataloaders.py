@@ -4,8 +4,8 @@ from sklearn.model_selection import train_test_split
 import pickle
 from random import randrange
 
-base_path_org = 'CEDAR signature verification/full_org/original_%d_%d.png'
-base_path_forg = 'CEDAR signature verification/full_forg/forgeries_%d_%d.png'
+base_path_org = 'Datasets/cedar1/full_org/original_%d_%d.png'
+base_path_forg = 'Datasets/cedar1/full_forg/forgeries_%d_%d.png'
 
 
 def fix_pair(x, y):
@@ -47,8 +47,8 @@ class TrainDataset(Dataset):
 
 	def __getitem__(self, index):
 		item = self.pairs[index]
-		X = convert_to_image_tensor(invert_image_path(prefix + item[0]))
-		Y = convert_to_image_tensor(invert_image_path(prefix + item[1]))
+		X = convert_to_image_tensor(invert_image_path(item[0]))
+		Y = convert_to_image_tensor(invert_image_path(item[1]))
 		return [X, Y, item[2]]
 
 	def __len__(self):
@@ -63,8 +63,8 @@ class TestDataset(Dataset):
 
 	def __getitem__(self, index):
 		item = self.pairs[index]
-		X = convert_to_image_tensor(invert_image_path(prefix + item[0]))
-		Y = convert_to_image_tensor(invert_image_path(prefix + item[1]))
+		X = convert_to_image_tensor(invert_image_path(item[0]))
+		Y = convert_to_image_tensor(invert_image_path(item[1]))
 		return [X, Y, item[2]]
 
 	def __len__(self):

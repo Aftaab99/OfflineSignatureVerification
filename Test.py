@@ -40,21 +40,20 @@ batch_avg_d = 0
 n_batch = 0
 
 
-def test(dataset_type):
+def test():
 	model.eval()
 	global batch_avg_acc, batch_avg_d, n_batch
-	
+
 	test_dataset = TestDataset()
 	loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
-	
 
 	for batch_index, data in enumerate(loader):
 		A = data[0]
 		B = data[1]
 		labels = data[2].long()
 
-		f_A, f_B = model.forward(A, B)
-		dist = distance_metric(f_A, f_B)
+		f_a, f_b = model.forward(A, B)
+		dist = distance_metric(f_a, f_b)
 
 		acc, d = compute_accuracy_roc(dist.detach().numpy(), labels.detach().numpy())
 		print('Max accuracy for batch {} = {} at d = {}'.format(batch_index, acc, d))
@@ -64,7 +63,5 @@ def test(dataset_type):
 
 
 print('CEDAR1:')
-test('CEDAR1')
+test()
 print('Avg acc across all batches={} at d={}'.format(batch_avg_acc / n_batch, batch_avg_d / n_batch))
-
-

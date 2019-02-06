@@ -77,8 +77,10 @@ def verify():
 	else:
 		return render_template('verify.html', result='')
 
+
 @app.route('/')
 def home():
 	return render_template('home.html')
+
 
 main()

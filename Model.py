@@ -41,8 +41,8 @@ class SiameseConvNet(Module):
 		return f_x, f_y
 
 
-def distance_metric(features_A, features_B):
-	batch_losses = F.pairwise_distance(features_A, features_B)
+def distance_metric(features_a, features_b):
+	batch_losses = F.pairwise_distance(features_a, features_b)
 	return batch_losses
 
 

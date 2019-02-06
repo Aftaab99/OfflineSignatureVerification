@@ -1,22 +1,30 @@
 ## Offline Writer Independent signature verification
 
-### Setting up project Environment
+### Setting up locally
+
+Download the dependencies(for conda users)
 
 	conda env create -f projenv.yml
+	
+They can be installed using pip via
+    
+    pip install -r requirements.txt
+    
+Then download the pretrained model and dataset
 
+    python DownloadData.py
+    
 After setting the environment and downloading the pretrained model, start the web server using
 
 	python main.py
 
 ### Models used
-Used a  convolutional siamese network along with the constrastive loss function. I chose euclidien distance as the distance metric for comparing the output feature vectors.
-Flask was used for the web demo.
-Download the [model](https://drive.google.com/open?id=1jR1CIgSuBy9_CV4zkSyojetCtU7Drxn2) and place it in the Models directory.
+Used a Convolutional Siamese network along with the Constrastive loss function. I chose Euclidian distance as the distance metric for comparing the output feature vectors.
 
 ### Accuracy
-The model acheived an accuracy of 74.34% on the CEDAR1 dataset(test set size was around 4100 samples). 
-Deviations of 1-2% are possible.
-The threshold for the siamese network was computed using a AUC-ROC curve.
+The model acheived an accuracy of 73.34% on the CEDAR signature dataset(test set size was around 4100 samples). 
+Deviations of 1-2% are possible as accuracy depends on the threshold.
+The threshold for the siamese network was computed by taking the average of True positive rate and True negative rate using ROC.
 
 ### Preprocessing
 Images were converted to grayscale, inverted and scaled down to 0 or up to 255 depending on whether the pixel value was below or above 50(this was done to remove any background specks and proved to simple yet effective technique for this task).
@@ -25,11 +33,9 @@ Images were grouped in pairs of genuine and forged images, where the label was 1
 13500 image pairs of each label where chosen, 15% of which were used for testing.
 
 ### Dataset
-[Dataset available here](https://drive.google.com/open?id=14FpvDPGy0TtRrJL8TLgaHpPzJhB2duGA).
+The CEDAR signature dataset is one of the benchmark datasets for signature verification. It consists of 24 genuine and forged signatures each from 55 different signers.
 
-[Original link](http://www.cedar.buffalo.edu/NIJ/data/signatures.rar)
-
-For training or testing replace the 'prefix' variable in Dataloaders.py with the path to the dataset folder's parent directory.
+[Dataset link](http://www.cedar.buffalo.edu/NIJ/data/signatures.rar)
 
 ### Trying the web demo
 [Web demo](https://signature-verification.herokuapp.com/)
