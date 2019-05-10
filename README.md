@@ -32,8 +32,11 @@ Image tensor sizes of 225x155 were fed into the model.
 Images were grouped in pairs of genuine and forged images, where the label was 1 if both were genuine and of the same writer and 0 otherwise.
 13500 image pairs of each label where chosen, 15% of which were used for testing.
 
-[https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/images/original_sign.png]!(original image)
-[https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/preprocessed_sign.png]!(preprocessed image)
+##### Original image
+![Original image](https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/images/original_sign.png)
+
+##### Preprocessed image
+![Preprocessed image](https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/images/preprocessed_sign.png)
 
 
 ### Dataset
