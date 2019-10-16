@@ -27,7 +27,7 @@ Deviations of 1-2% are possible as accuracy depends on the threshold.
 The threshold for the siamese network was computed by taking the average of True positive rate and True negative rate using ROC.
 
 ### Preprocessing
-Images were converted to grayscale, inverted and scaled down to 0 or up to 255 depending on whether the pixel value was below or above 50(this was done to remove any background specks and proved to simple yet effective technique for this task).
+Images were converted to grayscale, inverted and scaled down to 0 or up to 255 depending on whether the pixel value was below or above 50.
 Image tensor sizes of 225x155 were fed into the model.
 Images were grouped in pairs of genuine and forged images, where the label was 1 if both were genuine and of the same writer and 0 otherwise.
 13500 image pairs of each label where chosen, 15% of which were used for testing.
