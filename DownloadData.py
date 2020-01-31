@@ -43,7 +43,7 @@ def extract(file_path):
 
 if __name__ == "__main__":
     model_file_id = '1Dt-np-v30w0X1OSqqcKpzvifktq4k7r-'
-    model_destination = 'Models/model_epoch_2'
+    model_destination = 'Models/model_large_epoch_20'
     dataset_file_id = '1w2DEYX2pBhBNS2l4sqrl8j-Am4cNSBoZ'
     dataset_destination = 'Datasets/cedar1.zip'
 
@@ -55,7 +55,7 @@ if __name__ == "__main__":
         extract('./Datasets/cedar1.zip')
         os.remove('./Datasets/cedar1.zip')
 
-    if not os.path.exists('./Models/model_large_epoch_2'):
+    if not os.path.exists('./Models/model_large_epoch_20'):
         os.mkdir('./Models')
         print('Downloading pretrained-model...')
         download_file_from_google_drive(model_file_id, model_destination)
