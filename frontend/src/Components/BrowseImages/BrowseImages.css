@@ -1,0 +1,14 @@
+
+img {
+    margin: 5px;
+
+}
+
+input {
+    display: block;
+}
+
+label {
+    font-size: small;
+    color: red;
+}
