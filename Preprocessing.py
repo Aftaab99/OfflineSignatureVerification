@@ -37,5 +37,4 @@ def invert_image(image_file):
     return image_array
 
 
-show_inverted('Datasets/cedar1/full_org/original_1_12.png')
 

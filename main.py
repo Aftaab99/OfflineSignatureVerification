@@ -1,13 +1,15 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, send_from_directory, jsonify
 import sqlite3
 from PIL import Image
 from Preprocessing import convert_to_image_tensor, invert_image
 import torch
 from Model import SiameseConvNet, distance_metric
 from io import BytesIO
+import json
+import math
 
-app = Flask(__name__)
 
+app = Flask(__name__, static_folder='./frontend/build/static', template_folder='./frontend/build')
 
 def load_model():
     device = torch.device('cpu')
@@ -18,69 +20,79 @@ def load_model():
 
 def connect_to_db():
     conn = sqlite3.connect('user_signatures.db')
-    cursor = conn.cursor()
-    return cursor
+    return conn
 
 
 def get_file_from_db(customer_id):
-    cursor = connect_to_db()
-    select_fname = """SELECT file from signatures where customer_id = ?"""
+    cursor = connect_to_db().cursor()
+    select_fname = """SELECT sign1,sign2,sign3 from signatures where customer_id = ?"""
     cursor.execute(select_fname, (customer_id,))
     item = cursor.fetchone()
-    file = item[0]
     cursor.connection.commit()
-    return file
+    return item
 
 
 def main():
-    CREATE_TABLE = """CREATE TABLE IF NOT EXISTS signatures  (customer_id TEXT,file BLOB)"""
-    cursor = connect_to_db()
+    CREATE_TABLE = """CREATE TABLE IF NOT EXISTS signatures (customer_id TEXT PRIMARY KEY,sign1 BLOB, sign2 BLOB, sign3 BLOB)"""
+    cursor = connect_to_db().cursor()
     cursor.execute(CREATE_TABLE)
     cursor.connection.commit()
-    app.run()
-
-
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    if request.method == 'POST':
-        file = request.files.get('signature')
-        print('Added')
-        id = request.form.get('customer_id')
-        print("filename={}, id={}".format(file.filename, id))
-        insert_query = """INSERT INTO signatures VALUES(?, ?)"""
-        cursor = connect_to_db()
-        cursor.execute(insert_query, (id, file.read()))
-        cursor.connection.commit()
-        return render_template('upload.html', result="<h6>File uploaded successfully</h6>")
-    else:
-        return render_template('upload.html', result='')
-
-
-@app.route('/verify', methods=['GET', 'POST'])
-def verify():
-    if request.method == 'POST':
-        file = request.files.get('signature')
-        id = request.form.get('customer_id')
-        X = Image.open(file.stream)
-        X = convert_to_image_tensor(invert_image(X)).view(1, 1, 220, 155)
-        anchor_img_file = get_file_from_db(id)
-        A = Image.open(BytesIO(anchor_img_file))
-        A = convert_to_image_tensor(invert_image(A)).view(1, 1, 220, 155)
-        model = load_model()
-        f_A, f_X = model.forward(A, X)
-        dist = distance_metric(f_A, f_X).detach().numpy()
-        print('Dist={}'.format(dist))
-        if dist <= 0.145139:  # Threshold obtained using Test.py
-            return render_template('verify.html', result="<h6>Signatures are the same</h6>")
-        else:
-            return render_template('verify.html', result="<h6>Signatures are different</h6>")
-    else:
-        return render_template('verify.html', result='')
-
+    app.run() # app.run(debug=True)
 
 @app.route('/')
-def home():
-    return render_template('home.html')
+def index():
+    return render_template('index.html')
 
+@app.route('/upload', methods=['POST'])
+def upload():
+    file1 = request.files['uploadedImage1']
+    file2 = request.files['uploadedImage2']
+    file3 = request.files['uploadedImage3']
+    customer_id = request.form['customerID']
+    print(customer_id)
+    try:
+        conn = connect_to_db()
+        cursor = conn.cursor()
+        query = """DELETE FROM signatures where customer_id=?"""
+        cursor.execute(query, (customer_id,))
+        cursor = conn.cursor()
+        query = """INSERT INTO signatures VALUES(?,?,?,?)"""
+        cursor.execute(query, (customer_id, file1.read(), file2.read(), file3.read()))
+        conn.commit()
+        return jsonify({"error": False})
+    except Exception as e:
+        print(e)
+        return jsonify({"error": True})
+
+@app.route('/verify', methods=['POST'])
+def verify():
+    try:
+        customer_id = request.form['customerID']
+        input_image = Image.open(request.files['newSignature'])
+        input_image_tensor = convert_to_image_tensor(invert_image(input_image)).view(1,1,220,155)
+        anchor_images = [Image.open(BytesIO(x)) for x in get_file_from_db(customer_id)]
+        anchor_image_tensors = [convert_to_image_tensor(invert_image(x)).view(-1, 1, 220, 155) 
+                        for x in anchor_images]
+        model = load_model()
+        mindist = math.inf
+        for anci in anchor_image_tensors:
+            f_A, f_X = model.forward(anci, input_image_tensor)
+            dist = float(distance_metric(f_A, f_X).detach().numpy())
+            mindist = min(mindist, dist)
+
+            if dist <= 0.145139:  # Threshold obtained using Test.py
+                return jsonify({"match": True, "error": False, "threshold":"%.6f" % (0.145139), "distance":"%.6f"%(mindist)})
+        return jsonify({"match": False, "error": False, "threshold":0.145139, "distance":round(mindist, 6)})
+    except Exception as e:
+        print(e)
+        return jsonify({"error":True})
+
+@app.route("/manifest.json")
+def manifest():
+    return send_from_directory('./frontend/build', 'manifest.json')
+
+@app.route("/favicon.ico")
+def favicon():
+    return send_from_directory('./frontend/build', 'favicon.ico')
 
 main()

@@ -1,14 +1,13 @@
-
 img {
     margin: 5px;
-
 }
 
 input {
     display: block;
 }
 
-label {
+.BrowseImages>label {
     font-size: small;
     color: red;
 }
+

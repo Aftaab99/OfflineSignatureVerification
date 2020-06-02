@@ -8,13 +8,22 @@
     background-color: #2ecc71;
     color: #ecf0f1;
     transition: background-color .3s;
-    
 }
+
 .ActionButton:focus {
     background-color: #27ae60;
 }
 
 .ActionButton:hover {
     background-color: #2df782;
-    
+}
+
+@media only screen and (max-width: 450px) {
+   .ActionButton {
+       margin-top: 8px;
+       margin-left: 0;
+       margin-bottom: 8px;
+       width: 65%;
+       min-width: 80px;
+   }
 }

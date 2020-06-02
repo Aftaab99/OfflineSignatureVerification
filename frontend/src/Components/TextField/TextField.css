@@ -1,6 +1,6 @@
 .TextField {
     padding: 5px 10px;
     outline-color: #2ecc71;
-    display: inline;
+    display: inline-block;
+    width: 65%;
 }
-

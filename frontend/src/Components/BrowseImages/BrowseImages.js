@@ -2,37 +2,48 @@ import React, { useState } from 'react';
 import './BrowseImages.css';
 
 function BrowseImages(props) {
-    const [fileUrl, setFileUrl] = useState(new Array(props.imgLimit).fill(null));
-    const [filesValid, setFilesValid] = useState(false);
+
     const [errorText, setErrorText] = useState("")
-    console.log(props.imgLimit)
     const handleChange = (event) => {
-        let newFileUrl = []
-        for (let i = 0; i < parseInt(event.target.files.length); i++) {
-            newFileUrl.push(URL.createObjectURL(event.target.files[i]))
-        }
-        setFileUrl(newFileUrl);
+
+        const fileArr = Array.from(event.target.files)
+        Promise.all(fileArr.map((f) => {
+            return (new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.addEventListener('load', (ev) => {
+                    resolve(ev.target.result);
+                });
+                reader.addEventListener('error', reject);
+                reader.readAsDataURL(f);
+            }))
+        })).then(images => {
+            props.setFileUrl(images)
+        })
+
+        props.setFile(event.target.files);
 
         if (event.target.files.length !== parseInt(props.imgLimit)) {
-            setFilesValid(false);
+            props.setFilesValid(false);
             setErrorText("Please select exactly " + props.imgLimit + " images")
             return;
         }
 
-        setFilesValid(true);
+        props.setFilesValid(true);
         setErrorText("");
     }
-    let inputField = (props.allowMultiple==true)?
+    let inputField = (props.allowMultiple == true) ?
         <input type="file" onChange={handleChange} multiple accept="image/*" />
-        :<input type="file" onChange={handleChange} accept="image/*" />;
+        : <input type="file" onChange={handleChange} accept="image/*" />;
     return (
         <div className="BrowseImages">
             {inputField}
             <div>
-                {fileUrl.map(function (val, index) {
+                {props.fileUrl.map(function (val, index) {
+
                     return <img src={val} key={index} width="10%" />
                 })
-                }</div>
+                }
+            </div>
             <label>{errorText}</label>
         </div>);
 }

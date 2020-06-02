@@ -14,8 +14,13 @@ Then download the pretrained model and dataset
 
     python DownloadData.py
     
-After setting the environment and downloading the pretrained model, start the web server using
 
+To use the web demo
+    
+    cd frontend
+    npm install
+    npm run build
+    cd ..
 	python main.py
 
 ### Models used
@@ -47,3 +52,8 @@ The CEDAR signature dataset is one of the benchmark datasets for signature verif
 
 ### References
 1. [SigNet: Convolutional Siamese Network for Writer Independent Offline SignatureVerification](https://arxiv.org/pdf/1707.02131.pdf)
+
+### Screenshots
+![screenshot1](https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/images/ss1.png)
+
+![screenshot2](https://github.com/Aftaab99/OfflineSignatureVerification/blob/master/images/ss2.png)
