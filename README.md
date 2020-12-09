@@ -2,11 +2,7 @@
 
 ### Setting up locally
 
-Download the dependencies(for conda users)
-
-	conda env create -f projenv.yml
-	
-They can be installed using pip via
+Download the dependencies.
     
     pip install -r requirements.txt
     

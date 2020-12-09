@@ -18,8 +18,6 @@ def fix_pair(x, y):
 data = []
 n_samples_of_each_class = 13500
 
-prefix = '/home/aftaab/Datasets/'
-
 for _ in range(n_samples_of_each_class):
     anchor_person = randrange(1, 55)
     anchor_sign = randrange(1, 24)

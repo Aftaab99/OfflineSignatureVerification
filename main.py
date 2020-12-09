@@ -37,7 +37,8 @@ def main():
     cursor = connect_to_db().cursor()
     cursor.execute(CREATE_TABLE)
     cursor.connection.commit()
-    app.run() # app.run(debug=True)
+    # For heroku, remove this line. We'll use gunicorn to run the app
+    app.run() # app.run(debug=True) 
 
 @app.route('/')
 def index():
@@ -70,7 +71,10 @@ def verify():
         customer_id = request.form['customerID']
         input_image = Image.open(request.files['newSignature'])
         input_image_tensor = convert_to_image_tensor(invert_image(input_image)).view(1,1,220,155)
-        anchor_images = [Image.open(BytesIO(x)) for x in get_file_from_db(customer_id)]
+        customer_sample_images = get_file_from_db(customer_id)
+        if not customer_sample_images:
+            return jsonify({'error':True})
+        anchor_images = [Image.open(BytesIO(x)) for x in customer_sample_images]
         anchor_image_tensors = [convert_to_image_tensor(invert_image(x)).view(-1, 1, 220, 155) 
                         for x in anchor_images]
         model = load_model()
@@ -95,4 +99,5 @@ def manifest():
 def favicon():
     return send_from_directory('./frontend/build', 'favicon.ico')
 
-main()
+if __name__=='__main__':
+    main()
