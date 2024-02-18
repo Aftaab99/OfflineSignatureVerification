@@ -1,7 +1,8 @@
-http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
-numpy
+torch==1.4.0
+numpy==1.18.1
 gunicorn
-scipy
-sklearn
-flask
-pillow
+scipy==1.4.1
+scikit-learn==0.22.1
+flask==1.1.1
+pillow==7.1.2
+gdown==4.7.3

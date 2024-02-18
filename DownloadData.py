@@ -1,38 +1,6 @@
-import requests
 import os
 import zipfile
-
-
-def download_file_from_google_drive(id, destination):
-    URL = "https://drive.google.com/uc?export=download"
-
-    session = requests.Session()
-
-    response = session.get(URL, params={'id': id}, stream=True)
-    token = get_confirm_token(response)
-
-    if token:
-        params = {'id': id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
-
-    save_response_content(response, destination)
-
-
-def get_confirm_token(response):
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            return value
-
-    return None
-
-
-def save_response_content(response, destination):
-    CHUNK_SIZE = 32768
-
-    with open(destination, "wb") as f:
-        for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:  # filter out keep-alive new chunks
-                f.write(chunk)
+import gdown
 
 
 def extract(file_path):
@@ -50,12 +18,12 @@ if __name__ == "__main__":
     if not os.path.exists('./Datasets/cedar1/'):
         os.mkdir('./Datasets')
         print('Downloading dataset...')
-        download_file_from_google_drive(dataset_file_id, dataset_destination)
+        gdown.download('https://drive.google.com/uc?id={}'.format(dataset_file_id), dataset_destination, verify=False)
         print('Extracting data...')
-        extract('./Datasets/cedar1.zip')
-        os.remove('./Datasets/cedar1.zip')
+        extract(dataset_destination)
+        os.remove(dataset_destination)
 
     if not os.path.exists('./Models/model_large_epoch_20'):
         os.mkdir('./Models')
         print('Downloading pretrained-model...')
-        download_file_from_google_drive(model_file_id, model_destination)
+        gdown.download('https://drive.google.com/uc?id={}'.format(model_file_id), model_destination, verify=False)
